@@ -1,0 +1,47 @@
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
+
+from src.repository.connect import Base
+
+
+class UserModel(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    id_str = Column(String, nullable=True)
+    name = Column(String, nullable=True)
+    screen_name = Column(String, nullable=True)
+    location = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    url = Column(String, nullable=True)
+    protected = Column(Boolean, nullable=True)
+    followers_count = Column(Integer, nullable=True)
+    friends_count = Column(Integer, nullable=True)
+    listed_count = Column(Integer, nullable=True)
+    created_at = Column(DateTime, nullable=True)
+    favourites_count = Column(Integer, nullable=True)
+    verified = Column(Boolean, nullable=True)
+    statuses_count = Column(Integer, nullable=True)
+    lang = Column(String, nullable=True)
+    profile_image_url = Column(String, nullable=True)
+    profile_banner_url = Column(String, nullable=True)
+    profile_link_color = Column(String, nullable=True)
+    profile_sidebar_fill_color = Column(String, nullable=True)
+    profile_text_color = Column(String, nullable=True)
+    has_extended_profile = Column(Boolean, nullable=True)
+    default_profile = Column(Boolean, nullable=True)
+    default_profile_image = Column(Boolean, nullable=True)
+    follow_request_sent = Column(Boolean, nullable=True)
+    notifications = Column(Boolean, nullable=True)
+    geo_enabled = Column(Boolean, nullable=True)
+    time_zone = Column(String, nullable=True)
+    contributors_enabled = Column(Boolean, nullable=True)
+    is_translator = Column(Boolean, nullable=True)
+    is_translation_enabled = Column(Boolean, nullable=True)
+    profile_background_color = Column(String, nullable=True)
+    profile_background_image_url = Column(String, nullable=True)
+    profile_background_image_url_https = Column(String, nullable=True)
+    profile_background_tile = Column(Boolean, nullable=True)
+    profile_image_url_https = Column(String, nullable=True)
+    profile_sidebar_border_color = Column(String, nullable=True)
+    profile_use_background_image = Column(Boolean, nullable=True)
+    translator_type = Column(String, nullable=True)
