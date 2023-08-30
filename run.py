@@ -1,4 +1,8 @@
-from src.services.api_v1_service import APITwitterV1Service
+from datetime import datetime
 
-api = APITwitterV1Service()
-print(api.get_user(screen_name='jairbolsonaro').__dict__["_json"])
+from src.controllers.api_v2_controller import TwitterAPIV2
+from src.repository.connect import Connector
+from src.repository.models import TweetModel, ContextAnnotationsDomainModel, ContextAnnotationsEntityModel
+
+api = TwitterAPIV2()
+api.user(_id='jairbolsonaro')

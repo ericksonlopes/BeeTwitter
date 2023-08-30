@@ -1,6 +1,7 @@
 from src.repository.connect import Connector
-from src.repository.models.users_model import UserModel
-from src.services.api_v1_service import APITwitterV1Service
+from src.repository.models.user_model import UserModel
+
+from src.services import APITwitterV1Service
 
 
 class TwitterAPIV1Controller(APITwitterV1Service):
@@ -10,7 +11,7 @@ class TwitterAPIV1Controller(APITwitterV1Service):
             data = self.get_user(screen_name=screen_name).__dict__["_json"]
 
             user = UserModel(
-                id=data['id'],
+                id=data.get('id', None),
                 id_str=data['id_str'],
                 name=data['name'],
                 screen_name=data['screen_name'],
@@ -51,8 +52,8 @@ class TwitterAPIV1Controller(APITwitterV1Service):
                 translator_type=data['translator_type']
             )
 
-            # with Connector() as session:
-            #     session.add(user)
+            with Connector() as session:
+                session.add(user)
 
         except Exception as error:
             print(error)

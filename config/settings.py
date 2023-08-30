@@ -5,11 +5,11 @@ config = configparser.RawConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
 # Twitter API
-bearer_token = config.get("KeysTwitterAPI", "bearer_token")
-consumer_key = config.get("KeysTwitterAPI", "consumer_key")
-consumer_secret = config.get("KeysTwitterAPI", "consumer_secret")
-access_token = config.get("KeysTwitterAPI", "access_token")
-access_token_secret = config.get("KeysTwitterAPI", "access_token_secret")
+bearer_token = config.get("TwitterAPI", "bearer_token")
+consumer_key = config.get("TwitterAPI", "consumer_key")
+consumer_secret = config.get("TwitterAPI", "consumer_secret")
+access_token = config.get("TwitterAPI", "access_token")
+access_token_secret = config.get("TwitterAPI", "access_token_secret")
 
 # OpenAI
 API_KEY_OPENAI = config.get("Openai", "KEY")
