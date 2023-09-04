@@ -20,4 +20,5 @@ PASSWORD = config.get("Snowflake", "PASSWORD")
 ACCOUNT = config.get("Snowflake", "ACCOUNT")
 DATABASE = config.get("Snowflake", "DATABASE")
 SCHEMA = config.get("Snowflake", "SCHEMA")
+
 DATABASE_URL = f'snowflake://{USER}:{PASSWORD}@{ACCOUNT}/{DATABASE}/{SCHEMA}'

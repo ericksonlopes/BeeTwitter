@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Integer, Boolean, ForeignKey, Sequence
+from sqlalchemy import Column, String, DateTime, Integer, Boolean, ForeignKey, Sequence, Float
 from sqlalchemy.orm import relationship
 
 from src.repository.connect import Base
@@ -10,15 +10,8 @@ class TweetModel(Base):
     id = Column(String, primary_key=True)
     text = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=True)
-
-    # todo adicionar os campos
     url = Column(String, nullable=True)
-
-    referenced_tweets = Column(String, nullable=True)
-    entites = Column(String, nullable=True)
     author_id = Column(Integer, nullable=True)
-    attachments = Column(String, nullable=True)
-
     conversation_id = Column(Integer, nullable=True)
     geo = Column(String, nullable=True)
     in_reply_to_user_id = Column(String, nullable=True)
@@ -55,6 +48,14 @@ class TweetModel(Base):
     # Context_annotations
     context_annotations_domain = relationship("ContextAnnotationsDomainModel", back_populates="tweet")
     context_annotations_entity = relationship("ContextAnnotationsEntityModel", back_populates="tweet")
+    entities_mentions = relationship("EntitiesMentionsModel", back_populates="tweet")
+    entities_annotations = relationship("EntitiesAnnotationsModel", back_populates="tweet")
+    entities_cashtags = relationship("EntitiesCashtagsModel", back_populates="tweet")
+    entities_hashtags = relationship("EntitiesHashtagsModel", back_populates="tweet")
+    entities_urls = relationship("EntitiesUrlsModel", back_populates="tweet")
+    referenced_tweets = relationship("ReferencedTweetsModel", back_populates="tweet")
+    attachments_poll = relationship("AttachmentsPoll", back_populates="tweet")
+    attachments_media = relationship("AttachmentsMedia", back_populates="tweet")
 
 
 class ContextAnnotationsDomainModel(Base):
@@ -79,3 +80,102 @@ class ContextAnnotationsEntityModel(Base):
 
     tweet_id = Column(String, ForeignKey('Tweets.id'))
     tweet = relationship("TweetModel", back_populates="context_annotations_entity")
+
+
+class EntitiesMentionsModel(Base):
+    __tablename__ = 'EntitiesMentions'
+
+    id = Column(Integer, Sequence('ENTITIESMENTIONS_SEQ'), primary_key=True)
+    start = Column(Integer, nullable=True)
+    end = Column(Integer, nullable=True)
+    tag = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="entities_mentions")
+
+
+class EntitiesAnnotationsModel(Base):
+    __tablename__ = 'EntitiesAnnotations'
+
+    id = Column(Integer, Sequence('ENTITIESANNOTATIONS_SEQ'), primary_key=True)
+    start = Column(Integer, nullable=True)
+    end = Column(Integer, nullable=True)
+    probability = Column(Float, nullable=True)
+    type = Column(String, nullable=True)
+    normalized_text = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="entities_annotations")
+
+
+class EntitiesCashtagsModel(Base):
+    __tablename__ = 'EntitiesCashtags'
+
+    id = Column(Integer, Sequence('ENTITIESCASHTAGS_SEQ'), primary_key=True)
+    start = Column(Integer, nullable=True)
+    end = Column(Integer, nullable=True)
+    tag = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="entities_cashtags")
+
+
+class EntitiesHashtagsModel(Base):
+    __tablename__ = 'EntitiesHashtags'
+
+    id = Column(Integer, Sequence('ENTITIESHASHTAGS_SEQ'), primary_key=True)
+    start = Column(Integer, nullable=True)
+    end = Column(Integer, nullable=True)
+    tag = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="entities_hashtags")
+
+
+class EntitiesUrlsModel(Base):
+    __tablename__ = 'EntitiesUrls'
+
+    id = Column(Integer, Sequence('ENTITIESURLS_SEQ'), primary_key=True)
+    start = Column(Integer, nullable=True)
+    end = Column(Integer, nullable=True)
+    url = Column(String, nullable=True)
+    expanded_url = Column(String, nullable=True)
+    display_url = Column(String, nullable=True)
+    status = Column(String, nullable=True)
+    title = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    unwound_url = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="entities_urls")
+
+
+class ReferencedTweetsModel(Base):
+    __tablename__ = 'ReferencedTweets'
+
+    id = Column(Integer, Sequence('REFERENCEDTWEETS_SEQ'), primary_key=True)
+    type = Column(String, nullable=True)
+    id_Referenced = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="referenced_tweets")
+
+
+class AttachmentsPoll(Base):
+    __tablename__ = 'AttachmentsPoll'
+
+    id = Column(Integer, Sequence('ATTACHMENTSPOLL_SEQ'), primary_key=True)
+    poll_id = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="attachments_poll")
+
+
+class AttachmentsMedia(Base):
+    __tablename__ = 'AttachmentsMedia'
+
+    id = Column(Integer, Sequence('ATTACHMENTSMEDIA_SEQ'), primary_key=True)
+    midea_key = Column(String, nullable=True)
+
+    tweet_id = Column(String, ForeignKey('Tweets.id'))
+    tweet = relationship("TweetModel", back_populates="attachments_media")

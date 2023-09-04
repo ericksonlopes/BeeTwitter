@@ -1,5 +1,7 @@
+import re
+
 from src.repository.connect import Connector
-from src.repository.models import TweetModel, ContextAnnotationsDomainModel, ContextAnnotationsEntityModel
+from src.repository.models import *
 from src.services.api_v2_service import APITwitterV2Service
 
 
@@ -22,20 +24,24 @@ class TwitterAPIV2(APITwitterV2Service):
 
             for tweet in data:
                 try:
+                    texto = tweet.get('text', None)
+                    url = re.findall(r'\bhttps?://\S+\b', texto)[-1]
+
                     tweet_model = TweetModel(
                         id=tweet.get('id', None),
                         text=tweet.get('text', None),
                         created_at=tweet.get('created_at', None),
+                        url=url,
                         retweet_count=tweet.get('public_metrics', {}).get('retweet_count', None),
                         reply_count=tweet.get('public_metrics', {}).get('reply_count', None),
                         like_count=tweet.get('public_metrics', {}).get('like_count', None),
                         quote_count=tweet.get('public_metrics', {}).get('quote_count', None),
                         bookmark_count=tweet.get('public_metrics', {}).get('bookmark_count', None),
                         impression_count=tweet.get('public_metrics', {}).get('impression_count', None),
-                        referenced_tweets=tweet.get('referenced_tweets', None),
-                        entites=str(tweet.get('entities', None)),
+
+                        # referenced_tweets=tweet.get('referenced_tweets', None),
                         author_id=tweet.get('author_id', None),
-                        attachments=str(tweet.get('attachments', None)),
+                        # attachments=str(tweet.get('attachments', None)),
                         conversation_id=tweet.get('conversation_id', None),
                         edits_remaining=tweet.get('edits_remaining', None),
 
@@ -58,7 +64,7 @@ class TwitterAPIV2(APITwitterV2Service):
                         next_token=meta.get('next_token', None),
 
                         # Includes
-                        includes=str(includes.get('includes', None))
+                        # includes=str(includes.get('includes', None))
                     )
 
                     with Connector() as session:
@@ -68,7 +74,11 @@ class TwitterAPIV2(APITwitterV2Service):
                     print(error, "Erro ao criar o objeto TweetModel")
                     continue
 
+                # context annotations
                 try:
+                    if tweet.get('context_annotations', None) is None:
+                        continue
+
                     for context_annotations in tweet['context_annotations']:
                         domain = context_annotations['domain']
                         domain_model = ContextAnnotationsDomainModel(
@@ -91,8 +101,162 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(entity_model)
 
                 except Exception as error:
+                    print(error, "context_annotations")
+
+                # entities annotations
+                try:
+                    if tweet.get("entities", {}).get("annotations", None) is None:
+                        continue
+
+                    for annotation in tweet["entities"]["annotations"]:
+                        entities_annotations = EntitiesAnnotationsModel(
+                            tweet_id=tweet.get('id', None),
+                            start=annotation.get("start", None),
+                            end=annotation.get("end", None),
+                            probability=annotation.get("probability", None),
+                            type=annotation.get("type", None),
+                            normalized_text=annotation.get("normalized_text", None)
+                        )
+
+                        with Connector() as session:
+                            session.add(entities_annotations)
+
+                except Exception as error:
+                    print(error, "entities.annotations")
+
+                # entities cashtags
+                try:
+                    if tweet.get("entities", {}).get("cashtags", None) is None:
+                        continue
+
+                    for cashtag in tweet["entities"]["cashtags"]:
+                        cashtag_model = EntitiesCashtagsModel(
+                            tweet_id=tweet.get('id', None),
+                            start=cashtag.get("start", None),
+                            end=cashtag.get("end", None),
+                            tag=cashtag.get("tag", None)
+                        )
+
+                        with Connector() as session:
+                            session.add(cashtag_model)
+
+                except Exception as error:
+                    print(error, "entities.cashtags")
+
+                # entities hashtags
+                try:
+                    if tweet.get("entities", {}).get("hashtags", None) is None:
+                        continue
+
+                    for hashtag in tweet["entities"]["hashtags"]:
+                        hashtag_model = EntitiesHashtagsModel(
+                            tweet_id=tweet.get('id', None),
+                            start=hashtag.get("start", None),
+                            end=hashtag.get("end", None),
+                            tag=hashtag.get("tag", None)
+                        )
+
+                        with Connector() as session:
+                            session.add(hashtag_model)
+
+                except Exception as error:
                     print(error, "Erro ao criar a sessão")
-                    continue
+
+                # entities mentions
+                try:
+                    if tweet["entities"]["mentions"] is None:
+                        continue
+
+                    for mention in tweet["entities"]["mentions"]:
+                        mention_model = EntitiesMentionsModel(
+                            tweet_id=tweet.get('id', None),
+                            start=mention.get("start", None),
+                            end=mention.get("end", None),
+                            tag=mention.get("tag", None)
+                        )
+
+                        with Connector() as session:
+                            session.add(mention_model)
+
+                except Exception as error:
+                    print(error, "Erro ao criar a sessão")
+
+                # entities urls
+                try:
+                    if tweet.get("entities", {}).get("urls", None) is None:
+                        continue
+
+                    for url in tweet["entities"]["urls"]:
+                        url_model = EntitiesUrlsModel(
+                            tweet_id=tweet.get('id', None),
+                            start=url.get("start", None),
+                            end=url.get("end", None),
+                            url=url.get("url", None),
+                            expanded_url=url.get("expanded_url", None),
+                            display_url=url.get("display_url", None),
+                            status=url.get("status", None),
+                            title=url.get("title", None),
+                            description=url.get("description", None),
+                            unwound_url=url.get("unwound_url", None)
+                        )
+
+                        with Connector() as session:
+                            session.add(url_model)
+
+                except Exception as error:
+                    print(error, "Erro ao criar a sessão")
+
+                # referenced_tweets
+                try:
+                    if tweet.get("referenced_tweets", None) is None:
+                        continue
+
+                    for referenced_tweet in tweet["referenced_tweets"]:
+                        referenced_model = ReferencedTweetsModel(
+                            tweet_id=tweet.get('id', None),
+                            type=referenced_tweet.get("type", None),
+                            id_Referenced=referenced_tweet.get("id", None)
+                        )
+
+                        with Connector() as session:
+                            session.add(referenced_model)
+
+                except Exception as error:
+                    print(error, "Erro ao criar a sessão")
+
+                # attachments poll
+                try:
+                    if tweet.get("attachments", {}).get("poll_ids", None) is None:
+                        continue
+
+                    for poll in tweet["attachments"]["poll_ids"]:
+                        poll_model = AttachmentsPoll(
+                            tweet_id=poll.get('id', None),
+                            poll_id=poll
+                        )
+
+                        with Connector() as session:
+                            session.add(poll_model)
+
+                except Exception as error:
+                    print(error, "Erro ao criar a sessão")
+
+                # attachments midea_keys
+                try:
+                    if tweet.get("attachments", {}).get("midea_keys", None) is None:
+                        continue
+
+                    for midea_key in tweet["attachments"]["midea_keys"]:
+                        midea_key_model = AttachmentsMedia(
+                            tweet_id=tweet.get('id', None),
+                            midea_key=midea_key
+                        )
+
+                        with Connector() as session:
+                            session.add(midea_key_model)
+
+                except Exception as error:
+                    print(error, "Erro ao criar a sessão")
 
         except Exception as error:
             print(error)
