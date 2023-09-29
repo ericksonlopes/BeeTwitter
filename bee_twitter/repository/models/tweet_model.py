@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime, Integer, Boolean, ForeignKey, Sequence, Float
 from sqlalchemy.orm import relationship
 
-from src.repository.connect import Base
+from bee_twitter.repository.connect import Base
 
 
 class TweetModel(Base):

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 
-from src.repository.connect import Base
+from bee_twitter.repository.connect import Base
 
 
 class UserModel(Base):

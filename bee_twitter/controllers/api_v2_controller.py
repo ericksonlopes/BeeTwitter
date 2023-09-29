@@ -1,8 +1,10 @@
 import re
 
-from src.repository.connect import Connector
-from src.repository.models import *
-from src.services.api_v2_service import APITwitterV2Service
+from loguru import logger
+
+from bee_twitter.repository.connect import Connector
+from bee_twitter.repository.models import *
+from bee_twitter.services.api_v2_service import APITwitterV2Service
 
 
 class TwitterAPIV2(APITwitterV2Service):
@@ -29,7 +31,7 @@ class TwitterAPIV2(APITwitterV2Service):
 
                     tweet_model = TweetModel(
                         id=tweet.get('id', None),
-                        text=tweet.get('text', None),
+                        text=texto,
                         created_at=tweet.get('created_at', None),
                         url=url,
                         retweet_count=tweet.get('public_metrics', {}).get('retweet_count', None),
@@ -39,9 +41,7 @@ class TwitterAPIV2(APITwitterV2Service):
                         bookmark_count=tweet.get('public_metrics', {}).get('bookmark_count', None),
                         impression_count=tweet.get('public_metrics', {}).get('impression_count', None),
 
-                        # referenced_tweets=tweet.get('referenced_tweets', None),
                         author_id=tweet.get('author_id', None),
-                        # attachments=str(tweet.get('attachments', None)),
                         conversation_id=tweet.get('conversation_id', None),
                         edits_remaining=tweet.get('edits_remaining', None),
 
@@ -71,7 +71,8 @@ class TwitterAPIV2(APITwitterV2Service):
                         session.add(tweet_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar o objeto TweetModel")
+                    logger.error(f"Erro ao criar o objeto TweetModel: {error}")
+
                     continue
 
                 # context annotations
@@ -101,7 +102,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(entity_model)
 
                 except Exception as error:
-                    print(error, "context_annotations")
+                    logger.error(f"context_annotations {error}")
 
                 # entities annotations
                 try:
@@ -122,7 +123,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(entities_annotations)
 
                 except Exception as error:
-                    print(error, "entities.annotations")
+                    logger.error(f"entities.annotations: {error}")
 
                 # entities cashtags
                 try:
@@ -141,7 +142,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(cashtag_model)
 
                 except Exception as error:
-                    print(error, "entities.cashtags")
+                    logger.error(f"entities.cashtags {error}")
 
                 # entities hashtags
                 try:
@@ -160,7 +161,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(hashtag_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar a sessão")
+                    logger.error(f"entities.hashtags {error}")
 
                 # entities mentions
                 try:
@@ -179,7 +180,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(mention_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar a sessão")
+                    logger.error(f"entities.mentions {error}")
 
                 # entities urls
                 try:
@@ -204,7 +205,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(url_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar a sessão")
+                    logger.error(f"entities.urls {error}")
 
                 # referenced_tweets
                 try:
@@ -222,7 +223,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(referenced_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar a sessão")
+                    logger.error(f"referenced_tweets {error}")
 
                 # attachments poll
                 try:
@@ -239,7 +240,7 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(poll_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar a sessão")
+                    logger.error(f"attachments.poll_ids {error}")
 
                 # attachments midea_keys
                 try:
@@ -256,10 +257,10 @@ class TwitterAPIV2(APITwitterV2Service):
                             session.add(midea_key_model)
 
                 except Exception as error:
-                    print(error, "Erro ao criar a sessão")
+                    logger.error(f"attachments.midea_keys {error}")
 
         except Exception as error:
-            print(error)
+            logger.error(f"Erro ao criar o objeto TweetModel: {error}")
             return False
 
         return True

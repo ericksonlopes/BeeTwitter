@@ -1,6 +1,6 @@
 import tweepy
 
-from config.settings import consumer_key, consumer_secret, access_token, access_token_secret, bearer_token
+from bee_twitter.config.settings import consumer_key, consumer_secret, access_token, access_token_secret, bearer_token
 
 
 def get_twitter_conn_v1() -> tweepy.API:

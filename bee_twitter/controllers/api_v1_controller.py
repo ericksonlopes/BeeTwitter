@@ -1,7 +1,7 @@
-from src.repository.connect import Connector
-from src.repository.models.user_model import UserModel
+from bee_twitter.repository.connect import Connector
+from bee_twitter.repository.models.user_model import UserModel
 
-from src.services import APITwitterV1Service
+from bee_twitter.services import APITwitterV1Service
 
 
 class TwitterAPIV1Controller(APITwitterV1Service):

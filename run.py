@@ -1,13 +1,11 @@
-from datetime import datetime
-
 from sqlalchemy import distinct, func
 
-from src.controllers.api_v2_controller import TwitterAPIV2
-from src.repository.connect import Connector
-from src.repository.models import *
+from bee_twitter.controllers.api_v2_controller import TwitterAPIV2
+from bee_twitter.repository.connect import Connector
+from bee_twitter.repository.models import *
 
-# api = TwitterAPIV2()
-# api.user(_id='jairbolsonaro')
+api = TwitterAPIV2()
+api.user(_id='jairbolsonaro')
 
 
 with Connector() as session:

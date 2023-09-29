@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from config.settings import DATABASE_URL
+from bee_twitter.config.settings import DATABASE_URL
 
 # Declarando bases e tabelas
 Base = declarative_base()

@@ -1,5 +1,5 @@
-from src.repository.connect import Base, engine
+from bee_twitter.repository.connect import engine
 
-from src.repository.models import *
+from bee_twitter.repository.models import *
 
 Base.metadata.create_all(engine)

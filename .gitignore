@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-config/config.ini
+bee_twitter/config/config.ini
 
 # C extensions
 *.so
