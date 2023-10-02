@@ -1,6 +1,7 @@
+from loguru import logger
+
 from bee_twitter.repository.connect import Connector
 from bee_twitter.repository.models.user_model import UserModel
-
 from bee_twitter.services import APITwitterV1Service
 
 
@@ -56,13 +57,8 @@ class TwitterAPIV1Controller(APITwitterV1Service):
                 session.add(user)
 
         except Exception as error:
-            print(error)
+            logger.error(f'Erro ao salvar usuário: {error}')
             return False
 
-        print(user.__dict__)
+        logger.info(f'Usuário salvo com sucesso: {screen_name}')
         return True
-
-
-if __name__ == '__main__':
-    api = TwitterAPIV1Controller()
-    api.user(screen_name='jairbolsonaro')

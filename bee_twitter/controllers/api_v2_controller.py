@@ -4,7 +4,7 @@ from loguru import logger
 
 from bee_twitter.repository.connect import Connector
 from bee_twitter.repository.models import *
-from bee_twitter.services.api_v2_service import APITwitterV2Service
+from bee_twitter.services.api_twitter_services.api_v2_service import APITwitterV2Service
 
 
 class TwitterAPIV2(APITwitterV2Service):
@@ -13,24 +13,41 @@ class TwitterAPIV2(APITwitterV2Service):
 
     def user(self, _id: str) -> bool:
         try:
-            tweets = self.get_tweets('2670726740')
+            tweets = self.get_tweets(_id=_id)
             data = tweets.data
 
             meta = tweets.meta
 
-            # todo adicionar os includes
-            includes = tweets.includes
-
-            # todo salvar erros no log
-            # errors = tweets.__dict__["errors"]
+            if tweets.__dict__['errors']:
+                logger.info(f"Erros: {tweets.__dict__['errors']}")
 
             for tweet in data:
                 try:
                     texto = tweet.get('text', None)
-                    url = re.findall(r'\bhttps?://\S+\b', texto)[-1]
+
+                    with Connector() as session:
+                        exists = session.query(TweetModel).filter(TweetModel.id_tweet == tweet.get('id', None)).first()
+
+                        if exists:
+                            logger.info(f"Tweet já existe: {tweet.get('id', None)}")
+                            continue
+
+                    url = re.findall(r'\bhttps?://\S+\b', texto)
+
+                    if len(url) > 0:
+                        url = url[-1]
+                    else:
+                        url = None
+
+                    with Connector() as session:
+                        exists = session.query(TweetModel).filter(TweetModel.id == tweet.get('id', None)).first()
+
+                        if exists:
+                            continue
 
                     tweet_model = TweetModel(
-                        id=tweet.get('id', None),
+                        ind_analysis=False,
+                        id_tweet=tweet.get('id_tweet', None),
                         text=texto,
                         created_at=tweet.get('created_at', None),
                         url=url,
@@ -64,7 +81,7 @@ class TwitterAPIV2(APITwitterV2Service):
                         next_token=meta.get('next_token', None),
 
                         # Includes
-                        # includes=str(includes.get('includes', None))
+                        includes=str(includes.get('includes', None))
                     )
 
                     with Connector() as session:
@@ -264,8 +281,3 @@ class TwitterAPIV2(APITwitterV2Service):
             return False
 
         return True
-
-
-if __name__ == '__main__':
-    api = TwitterAPIV2()
-    api.user(_id='jairbolsonaro')

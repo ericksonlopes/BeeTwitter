@@ -1,7 +1,8 @@
+from loguru import logger
 from tweepy import Response
 
 from bee_twitter.helpers.auth_tweepy import get_twitter_conn_v2
-from loguru import logger
+
 
 class APITwitterV2Service:
     @classmethod

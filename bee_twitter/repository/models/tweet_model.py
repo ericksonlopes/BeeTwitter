@@ -7,9 +7,11 @@ from bee_twitter.repository.connect import Base
 class TweetModel(Base):
     __tablename__ = 'Tweets'
 
-    id = Column(String, primary_key=True)
-    text = Column(String, nullable=True)
-    created_at = Column(DateTime, nullable=True)
+    id = Column(Integer, Sequence('TWEETS_SEQ'), primary_key=True, doc="ID na base de dados")
+    id_tweet = Column(String, nullable=True, doc="ID do tweet")
+    text = Column(String, nullable=True, doc="Texto do tweet")
+    created_at = Column(DateTime, nullable=True, doc="Data e hora de criação do tweet")
+
     url = Column(String, nullable=True)
     author_id = Column(Integer, nullable=True)
     conversation_id = Column(Integer, nullable=True)
@@ -21,6 +23,7 @@ class TweetModel(Base):
     reply_settings = Column(String, nullable=True)
     source = Column(String, nullable=True)
     withheld = Column(String, nullable=True)
+    ind_analysis = Column(Boolean, default=False, doc="Indicador de análise do tweet")
 
     # public_metrics
     retweet_count = Column(Integer, nullable=True)
