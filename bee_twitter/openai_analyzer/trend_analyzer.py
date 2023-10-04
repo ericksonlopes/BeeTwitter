@@ -36,7 +36,7 @@ class TrendAnalyzer:
         except Exception as error:
             logger.error(f"Erro ao coletar tweets: {error}")
 
-    def analyze_trend(self, trend):
+    def analyze_trend(self, trend) -> str:
         openai.api_key = self.api_key
 
         tweets = self.get_tweets(trend)

@@ -12,6 +12,7 @@ class TrendModel(Base):
 
     hashtag = Column(String, nullable=True)
     analyzed_tweets = Column(String, nullable=True)
+    order = Column(Integer, nullable=True)
 
     dt_creation = Column(DateTime, nullable=True, default=datetime.now())
     dt_update = Column(DateTime, nullable=True, default=datetime.now())

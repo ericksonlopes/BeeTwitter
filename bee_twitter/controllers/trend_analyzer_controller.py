@@ -11,7 +11,7 @@ from bee_twitter.repository.models.trends_model import TrendModel
 class TrendAnalyserControl:
     URL = "https://trends24.in/brazil/"
 
-    def get_trends(self) -> list[str]:
+    def get_trends(self) -> list[tuple[str, int]]:
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
         req = requests.get(self.URL, headers={'User-Agent': 'Mozilla/5.0'}, timeout=5, verify=False)
@@ -22,7 +22,7 @@ class TrendAnalyserControl:
 
         list_li = soup.find("ol", {"class": "trend-card__list"}).find_all("li")
 
-        list_trends = [trend.a.text.replace("#", "") for trend in list_li]
+        list_trends = [(trend.a.text.replace("#", ""), index + 1) for index, trend in enumerate(list_li)]
 
         logger.info(f"Trends coletados com sucesso: {list_trends}")
 
@@ -31,13 +31,17 @@ class TrendAnalyserControl:
     def run(self):
         list_trends = self.get_trends()
 
-        for trend in list_trends:
+        for trend in list_trends[:20]:
+            hashtag = trend[0]
+            index = trend[1]
+
             try:
-                summary = TrendAnalyzer().analyze_trend(trend)
+                summary = TrendAnalyzer().analyze_trend(hashtag)
 
                 trend_model = TrendModel(
-                    hashtag=trend,
-                    analyzed_tweets=summary
+                    hashtag=hashtag,
+                    analyzed_tweets=summary,
+                    order=index
                 )
 
                 with Connector() as session:
@@ -47,5 +51,3 @@ class TrendAnalyserControl:
 
             except Exception as error:
                 logger.error(f"Erro ao analisar trend: {error}")
-
-            break
