@@ -9,12 +9,9 @@ sqlalchemy = "*"
 snowflake-sqlalchemy = "*"
 loguru = "*"
 openai = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
-tweepy = "*"
-sqlalchemy = "*"
-snowflake-sqlalchemy = "*"
-loguru = "*"
 
 [requires]
 python_version = "3.10"

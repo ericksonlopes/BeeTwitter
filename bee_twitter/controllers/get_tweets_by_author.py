@@ -4,22 +4,27 @@ from loguru import logger
 
 from bee_twitter.repository.connect import Connector
 from bee_twitter.repository.models import *
+from bee_twitter.services import APITwitterV1Service
 from bee_twitter.services.api_twitter_services.api_v2_service import APITwitterV2Service
 
 
-class TwitterAPIV2(APITwitterV2Service):
+class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
     def __init__(self):
         super().__init__()
 
-    def user(self, _id: str) -> bool:
+    def get_tweets_user(self, screen_name: str):
+        logger.info(f"Iniciando coleta de tweets para o usuário: {screen_name}")
+
         try:
-            tweets = self.get_tweets(_id=_id)
+            id_author = self.get_user_id(screen_name=screen_name)
+
+            tweets = self.get_tweets(_id=id_author)
             data = tweets.data
 
             meta = tweets.meta
 
-            if tweets.__dict__['errors']:
-                logger.info(f"Erros: {tweets.__dict__['errors']}")
+            if tweets.errors:
+                logger.info(f"Erros: {tweets.errors.__dict__}")
 
             for tweet in data:
                 try:
@@ -45,9 +50,9 @@ class TwitterAPIV2(APITwitterV2Service):
                         if exists:
                             continue
 
-                    tweet_model = TweetModel(
+                    tweet_model_add = TweetModel(
                         ind_analysis=False,
-                        id_tweet=tweet.get('id_tweet', None),
+                        id_tweet=tweet.get('id', None),
                         text=texto,
                         created_at=tweet.get('created_at', None),
                         url=url,
@@ -80,13 +85,13 @@ class TwitterAPIV2(APITwitterV2Service):
                         oldest_id=meta.get('oldest_id', None),
                         next_token=meta.get('next_token', None),
 
-                        # Includes
-                        includes=str(includes.get('includes', None))
                     )
 
                     with Connector() as session:
-                        session.add(tweet_model)
+                        session.add(tweet_model_add)
 
+                    logger.info(f"Tweet adicionado com sucesso: {tweet.get('id', None)}")
+                    logger.info(f"Buscand mais informações sobre o tweet: {tweet.get('id', None)}")
                 except Exception as error:
                     logger.error(f"Erro ao criar o objeto TweetModel: {error}")
 
@@ -278,6 +283,5 @@ class TwitterAPIV2(APITwitterV2Service):
 
         except Exception as error:
             logger.error(f"Erro ao criar o objeto TweetModel: {error}")
-            return False
 
-        return True
+        logger.info(f"Coleta de tweets finalizada para o usuário: {screen_name}")

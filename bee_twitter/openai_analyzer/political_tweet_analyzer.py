@@ -1,4 +1,5 @@
 import openai
+from loguru import logger
 
 
 class PoliticalTweetAnalyzer:
@@ -29,5 +30,6 @@ class PoliticalTweetAnalyzer:
             frequency_penalty=0.2,
             presence_penalty=0.0
         )
+        logger.info(f"Resposta do OpenAI: {response}")
 
         return response['choices'][0]['text']

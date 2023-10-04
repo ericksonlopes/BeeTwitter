@@ -9,7 +9,7 @@ class APITwitterV2Service:
     def client(cls):
         return get_twitter_conn_v2()
 
-    def get_tweets(self, _id: str, max_results: int = 5) -> Response:
+    def get_tweets(self, _id: int, max_results: int = 5) -> Response:
         try:
             return self.client().get_users_tweets(id=_id, max_results=max_results, tweet_fields=[
                 'created_at',
@@ -36,8 +36,3 @@ class APITwitterV2Service:
 
         except Exception as e:
             logger.error(f'Error on get tweets: {e}')
-
-
-if __name__ == '__main__':
-    api = APITwitterV2Service()
-    print(api.get_tweets(_id='2244994945'))

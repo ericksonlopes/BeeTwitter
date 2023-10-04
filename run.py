@@ -1,6 +1,5 @@
-from bee_twitter.config.settings import API_KEY_OPENAI
-from bee_twitter.controllers.api_v2_controller import TwitterAPIV2
-from bee_twitter.controllers.political_tweet_analyzer import PoliticalTweetAnalyzerController
+from bee_twitter.controllers.get_tweets_by_author import GetTweetsByAuthor
+from bee_twitter.controllers.political_tweet_analyzer_controller import PoliticalTweetAnalyzerController
 
 
 def get_tweets():

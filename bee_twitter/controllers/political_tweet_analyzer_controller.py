@@ -3,15 +3,14 @@ import re
 from loguru import logger
 
 from bee_twitter.config.settings import API_KEY_OPENAI
+from bee_twitter.openai_analyzer.political_tweet_analyzer import PoliticalTweetAnalyzer
 from bee_twitter.repository.connect import Connector
 from bee_twitter.repository.models import TweetModel
 from bee_twitter.repository.models.tweet_model_analysis import TweetQualityModel
-from bee_twitter.tweet_analyzer_scripts.political_tweet_analyzer import PoliticalTweetAnalyzer
 
 
 class PoliticalTweetAnalyzerController:
-    def __init__(self, api_openai: str):
-        self.api_key: str = api_openai
+    api_key = API_KEY_OPENAI
 
     @staticmethod
     def tweet_to_dict(tweet) -> dict:
@@ -33,7 +32,7 @@ class PoliticalTweetAnalyzerController:
         categories = re.findall(r'(\w+):\s(\d+)%', return_analyze)
 
         if categories is None:
-            logger.warning(f'Erro ao analisar tweet: {tweet.id} - {return_analyze}')
+            logger.info(f'Tweet não analisado: {tweet.id} - {return_analyze}, tentando novamente')
             self.analyze_tweet(session, tweet)
 
         texto = re.search(r'texto:\s(.+)', return_analyze).group(1)
@@ -83,8 +82,3 @@ class PoliticalTweetAnalyzerController:
                     logger.error(f'Erro ao analisar tweet: {tweet_id} - {e}')
                     session.rollback()
 
-
-if __name__ == '__main__':
-    api_key = API_KEY_OPENAI
-    pta = PoliticalTweetAnalyzerController(api_key)
-    pta.run()
