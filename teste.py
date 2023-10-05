@@ -2,7 +2,7 @@ import tweepy
 from sqlalchemy import distinct, func
 
 from bee_twitter.config.settings import bearer_token, access_token, access_token_secret
-from bee_twitter.repository.connect import Connector
+from bee_twitter.repository.connect_snowflake import ConnectorSnowflake
 from bee_twitter.repository.models import *
 
 client = tweepy.Client(bearer_token=bearer_token, consumer_key="ODQxT0gzY0JPSjJCTVl5ODAzdHI6MTpjaQ",
@@ -75,7 +75,7 @@ def get_tweets():
     # print(".withheld): ", tweets[0][1].withheld)
 
 
-with Connector() as session:
+with ConnectorSnowflake() as session:
     query = (
         session.query(
             TweetModel.id,

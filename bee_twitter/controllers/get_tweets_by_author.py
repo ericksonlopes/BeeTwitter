@@ -2,8 +2,8 @@ import re
 
 from loguru import logger
 
-from bee_twitter.repository.connect import Connector
-from bee_twitter.repository.models import *
+from bee_twitter.repository.connect_snowflake import ConnectorSnowflake
+from bee_twitter.repository.models.snowflake import *
 from bee_twitter.services import APITwitterV1Service
 from bee_twitter.services.api_twitter_services.api_v2_service import APITwitterV2Service
 
@@ -30,7 +30,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                 try:
                     texto = tweet.get('text', None)
 
-                    with Connector() as session:
+                    with ConnectorSnowflake() as session:
                         exists = session.query(TweetModel).filter(TweetModel.id_tweet == tweet.get('id', None)).first()
 
                         if exists:
@@ -44,7 +44,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                     else:
                         url = None
 
-                    with Connector() as session:
+                    with ConnectorSnowflake() as session:
                         exists = session.query(TweetModel).filter(TweetModel.id == tweet.get('id', None)).first()
 
                         if exists:
@@ -87,7 +87,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
 
                     )
 
-                    with Connector() as session:
+                    with ConnectorSnowflake() as session:
                         session.add(tweet_model_add)
 
                     logger.info(f"Tweet adicionado com sucesso: {tweet.get('id', None)}")
@@ -119,7 +119,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             description=entity.get('description', None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(domain_model)
                             session.add(entity_model)
 
@@ -141,7 +141,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             normalized_text=annotation.get("normalized_text", None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(entities_annotations)
 
                 except Exception as error:
@@ -160,7 +160,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             tag=cashtag.get("tag", None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(cashtag_model)
 
                 except Exception as error:
@@ -179,7 +179,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             tag=hashtag.get("tag", None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(hashtag_model)
 
                 except Exception as error:
@@ -198,7 +198,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             tag=mention.get("tag", None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(mention_model)
 
                 except Exception as error:
@@ -223,7 +223,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             unwound_url=url.get("unwound_url", None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(url_model)
 
                 except Exception as error:
@@ -241,7 +241,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             id_Referenced=referenced_tweet.get("id", None)
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(referenced_model)
 
                 except Exception as error:
@@ -258,7 +258,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             poll_id=poll
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(poll_model)
 
                 except Exception as error:
@@ -275,7 +275,7 @@ class GetTweetsByAuthor(APITwitterV2Service, APITwitterV1Service):
                             midea_key=midea_key
                         )
 
-                        with Connector() as session:
+                        with ConnectorSnowflake() as session:
                             session.add(midea_key_model)
 
                 except Exception as error:

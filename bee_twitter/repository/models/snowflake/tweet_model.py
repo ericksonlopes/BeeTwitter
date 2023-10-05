@@ -1,14 +1,14 @@
 from sqlalchemy import Column, String, DateTime, Integer, Boolean, ForeignKey, Sequence, Float
 from sqlalchemy.orm import relationship
 
-from bee_twitter.repository.connect import Base
+from bee_twitter.repository.connect_snowflake import Base
 
 
 class TweetModel(Base):
     __tablename__ = 'Tweets'
 
     id = Column(Integer, Sequence('TWEETS_SEQ'), primary_key=True, doc="ID na base de dados")
-    id_tweet = Column(String, nullable=True, doc="ID do tweet")
+    id_tweet = Column(Integer, nullable=True, doc="ID do tweet")
     text = Column(String, nullable=True, doc="Texto do tweet")
     created_at = Column(DateTime, nullable=True, doc="Data e hora de criação do tweet")
 

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, String, DateTime, Integer, Sequence
 
-from bee_twitter.repository.connect import Base
+from bee_twitter.repository.connect_snowflake import Base
 
 
 class TrendModel(Base):

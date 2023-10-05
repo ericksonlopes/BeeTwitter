@@ -1,8 +1,8 @@
 from loguru import logger
 
 from bee_twitter.helpers.auth_tweepy import get_twitter_conn_v1
-from bee_twitter.repository.connect import Connector
-from bee_twitter.repository.models import UserModel
+from bee_twitter.repository.connect_snowflake import ConnectorSnowflake
+from bee_twitter.repository.models.snowflake import UserModel
 
 
 class APITwitterV1Service:
@@ -13,7 +13,7 @@ class APITwitterV1Service:
 
     def get_user_id(self, screen_name: str) -> int:
         try:
-            with Connector() as session:
+            with ConnectorSnowflake() as session:
                 user = session.query(UserModel).filter(UserModel.screen_name == screen_name).first()
 
                 if user:
@@ -30,7 +30,7 @@ class APITwitterV1Service:
 
     def get_user(self, screen_name: str) -> UserModel:
         try:
-            with Connector() as session:
+            with ConnectorSnowflake() as session:
                 user = session.query(UserModel).filter(UserModel.screen_name == screen_name).first()
 
                 if user:
@@ -86,7 +86,7 @@ class APITwitterV1Service:
                 translator_type=data['translator_type']
             )
 
-            with Connector() as session:
+            with ConnectorSnowflake() as session:
                 session.add(user)
 
             logger.info(f'User {screen_name} saved with success')

@@ -21,4 +21,8 @@ ACCOUNT = config.get("Snowflake", "ACCOUNT")
 DATABASE = config.get("Snowflake", "DATABASE")
 SCHEMA = config.get("Snowflake", "SCHEMA")
 
-DATABASE_URL = f'snowflake://{USER}:{PASSWORD}@{ACCOUNT}/{DATABASE}/{SCHEMA}'
+DATABASE_URL_SF = f'snowflake://{USER}:{PASSWORD}@{ACCOUNT}/{DATABASE}/{SCHEMA}'
+
+# Cosmos DB
+URL = config.get("CosmosDB", "URL")
+KEY = config.get("CosmosDB", "KEY")

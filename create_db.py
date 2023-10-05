@@ -1,5 +1,5 @@
-from bee_twitter.repository.connect import engine
+from bee_twitter.repository.connect_snowflake import engine
 
-from bee_twitter.repository.models import *
+from bee_twitter.repository.models.snowflake import *
 
 Base.metadata.create_all(engine)

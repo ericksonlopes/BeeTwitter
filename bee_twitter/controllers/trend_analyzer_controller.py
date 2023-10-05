@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 from loguru import logger
 
 from bee_twitter.openai_analyzer.trend_analyzer import TrendAnalyzer
-from bee_twitter.repository.connect import Connector
-from bee_twitter.repository.models.trends_model import TrendModel
+from bee_twitter.repository.connect_snowflake import ConnectorSnowflake
+from bee_twitter.repository.models.snowflake.trends_model import TrendModel
 
 
 class TrendAnalyserControl:
@@ -44,7 +44,7 @@ class TrendAnalyserControl:
                     order=index
                 )
 
-                with Connector() as session:
+                with ConnectorSnowflake() as session:
                     session.add(trend_model)
 
                 logger.info(f"Trend analisada e salva: {trend}")

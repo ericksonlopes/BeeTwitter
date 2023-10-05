@@ -5,7 +5,7 @@ from bee_twitter.controllers.trend_analyzer_controller import TrendAnalyserContr
 
 def get_tweets():
     api = GetTweetsByAuthor()
-    api.get_tweets_user(screen_name='jairbolsonaro')
+    api.get_tweets_user(screen_name='LulaOficial')
 
 
 def analyze_tweets():
@@ -20,5 +20,5 @@ def get_trends():
 
 if __name__ == '__main__':
     # get_tweets()
-    # analyze_tweets()
-    get_trends()
+    analyze_tweets()
+    # get_trends()

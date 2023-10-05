@@ -10,6 +10,7 @@ snowflake-sqlalchemy = "*"
 loguru = "*"
 openai = "*"
 beautifulsoup4 = "*"
+azure-cosmos = "*"
 
 [dev-packages]
 

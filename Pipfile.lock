@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e3b0d1e68d5c69777342360347b94a1a85ca79b9ee1174bc3c701dbe307c4574"
+            "sha256": "6d6c2fab9a6e6dabe78e68c9674791c0847b2371a16295192b8f1117790a581b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -139,6 +139,22 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==23.1.0"
+        },
+        "azure-core": {
+            "hashes": [
+                "sha256:500b3aa9bf2e90c5ccc88bb105d056114ca0ce7d0ce73afb8bc4d714b2fc7568",
+                "sha256:b03261bcba22c0b9290faf9999cedd23e849ed2577feee90515694cea6bc74bf"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==1.29.4"
+        },
+        "azure-cosmos": {
+            "hashes": [
+                "sha256:3557570cf7197f50c5b11e655c1fbb1ddf433adc94f91381d671cfad8e2d7bdf",
+                "sha256:c4ada8381306eec413c01bc50a778e264dc3f4fafa9d696f9df8436148d2aea8"
+            ],
+            "index": "pypi",
+            "version": "==4.5.1"
         },
         "beautifulsoup4": {
             "hashes": [
@@ -701,6 +717,14 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.3.1"
+        },
+        "six": {
+            "hashes": [
+                "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
+                "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==1.16.0"
         },
         "snowflake-connector-python": {
             "hashes": [

@@ -1,0 +1,1 @@
+from bee_twitter.repository.models.cosmos.app_author_quality import AppAuthorQuality
