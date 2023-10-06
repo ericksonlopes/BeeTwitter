@@ -3,7 +3,7 @@ import re
 from loguru import logger
 
 from bee_twitter.config.settings import API_KEY_OPENAI
-from bee_twitter.openai_analyzer.political_tweet_analyzer import PoliticalTweetAnalyzer
+from bee_twitter.services.political_tweet_analyzer import PoliticalTweetAnalyzer
 from bee_twitter.repository.connect_cosmos import CosmosDBManager
 from bee_twitter.repository.connect_snowflake import ConnectorSnowflake
 from bee_twitter.repository.models.cosmos import AppAuthorQuality
@@ -15,7 +15,7 @@ class PoliticalTweetAnalyzerController:
     api_key = API_KEY_OPENAI
 
     @staticmethod
-    def insert_tweet_analyzed_in_cosmos(categories: list[tuple[str, str]], tweet: TweetModel, texto: str):
+    def insert_author_quality_analyzed_in_cosmos(categories: list[tuple[str, str]], tweet: TweetModel, texto: str):
 
         categories_dict = [
             {"order": index, "name": category[0], "quality_value": category[1]}
@@ -40,11 +40,11 @@ class PoliticalTweetAnalyzerController:
         db_manager = CosmosDBManager(container_name="app_author_quality")
         db_manager.add_object(author_quality)
 
-    def analyze_tweet(self, session, tweet):
+    def analyze_tweet(self, session, tweet, count=0):
         try:
             political_tweet = PoliticalTweetAnalyzer(self.api_key)
-
             return_analyze = political_tweet.analyze_tweet(tweet.text)
+
         except Exception as e:
             logger.error(f'Erro ao analisar tweet: {tweet.id} - {e}')
             return e
@@ -53,7 +53,12 @@ class PoliticalTweetAnalyzerController:
 
         if categories is None:
             logger.warning(f'Tweet não analisado corretamente: {tweet.id}, tentando novamente.')
-            self.analyze_tweet(session, tweet)
+
+            if count == 3:
+                logger.warning(f'Tweet não analisado corretamente: {tweet.id}, tentando novamente.')
+                raise Exception(f'Tweet não analisado corretamente: {tweet.id}!')
+
+            self.analyze_tweet(session, tweet, count)
 
         texto = re.search(r'texto:\s(.+)', return_analyze).group(1)
 
@@ -73,7 +78,7 @@ class PoliticalTweetAnalyzerController:
             session.add(tweet_quality)
 
         try:
-            self.insert_tweet_analyzed_in_cosmos(categories, tweet, texto)
+            self.insert_author_quality_analyzed_in_cosmos(categories, tweet, texto)
         except Exception as e:
             logger.error(f'Erro ao salvar tweet no Cosmos: {tweet.id} - {e}')
             raise e

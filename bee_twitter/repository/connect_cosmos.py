@@ -3,11 +3,11 @@ from datetime import datetime
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
 from loguru import logger
 
-from bee_twitter.config.settings import URL, KEY
+from bee_twitter.config.settings import URL, KEY, DATABASE_COSMOS
 
 
 class CosmosDBManager:
-    def __init__(self, container_name, database_id="app_site"):
+    def __init__(self, container_name, database_id=DATABASE_COSMOS, partition_key="/id"):
         self.client = CosmosClient(URL, credential=KEY)
         self.database_id = database_id
         self.container_name = container_name
@@ -15,7 +15,7 @@ class CosmosDBManager:
         try:
             self.database = self.client.create_database_if_not_exists(id=database_id)
             self.container = self.database.create_container_if_not_exists(
-                id=container_name, partition_key=PartitionKey(path=f"/{container_name}")
+                id=container_name, partition_key=PartitionKey(path=f"{partition_key}")
             )
         except Exception as e:
             logger.error(f"Erro ao inicializar o Cosmos DB: {str(e)}")
@@ -37,3 +37,4 @@ class CosmosDBManager:
         except Exception as e:
             logger.error(f"Erro ao adicionar item ao Cosmos DB: {str(e)}")
             raise
+

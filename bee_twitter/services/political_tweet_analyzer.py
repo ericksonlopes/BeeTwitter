@@ -1,9 +1,11 @@
 import openai
 
+from bee_twitter.config.settings import API_KEY_OPENAI
+
 
 class PoliticalTweetAnalyzer:
-    def __init__(self, api_key):
-        self.api_key = api_key
+    def __init__(self):
+        self.api_key = API_KEY_OPENAI
 
     def analyze_tweet(self, post_text):
         openai.api_key = self.api_key
@@ -16,6 +18,7 @@ class PoliticalTweetAnalyzer:
         Dê, também o percentual geral de qualidade do post do ponto de vista da mensagem de uma figura política 
         importante. No final, faça um texto resumo do porquê da nota.  
         no formato da resposta utilize este formato - exemplo: Objetividade: 0%, Autruísmo: 0%, Tom Acusatório: 0%, Ironia: 0%, Sarcasmo: 0%, Utilidade Pública: 0%, Percentual geral: 0%, texto: ´´
+        
         Post: \n{post_text}
         """
 

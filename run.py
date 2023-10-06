@@ -5,7 +5,7 @@ from bee_twitter.controllers.trend_analyzer_controller import TrendAnalyserContr
 
 def get_tweets():
     api = GetTweetsByAuthor()
-    api.get_tweets_user(screen_name='LulaOficial')
+    api.get_author_quality(screen_name='LulaOficial')
 
 
 def analyze_tweets():

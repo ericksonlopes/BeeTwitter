@@ -4,7 +4,7 @@ from datetime import datetime
 
 @dataclass
 class AppAuthorQuality:
-    id: int = None
+    id: str = None
     dt_creation: str = field(default_factory=datetime.now().isoformat)
     dt_update: str = field(default_factory=datetime.now().isoformat)
     dt_expiration: str = None

@@ -3,7 +3,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from loguru import logger
 
-from bee_twitter.openai_analyzer.trend_analyzer import TrendAnalyzer
+from bee_twitter.services.trend_analyzer import TrendAnalyzer
 from bee_twitter.repository.connect_snowflake import ConnectorSnowflake
 from bee_twitter.repository.models.snowflake.trends_model import TrendModel
 

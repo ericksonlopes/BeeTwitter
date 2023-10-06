@@ -62,7 +62,7 @@ tweet_adding_function(data2, quality_data2, tweet_list)
 df = pd.DataFrame(tweet_list)
 df2 = df.groupby('quality_results_name')['quality_results_value'].mean().reset_index()
 
-dicionario = df2.to_dict()
+dicionario = df2.to_dict('records')
 
-if __name__ == "__main__":
-    print(dicionario)
+print(dicionario)
+
